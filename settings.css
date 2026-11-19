@@ -1,0 +1,16 @@
+/* Gomoku mappings for the shared Osiem Asów settings dialog. */
+.shared-settings { --muted: var(--ink); }
+.shared-settings .settings-heading { direction: ltr; }
+.shared-settings .settings-heading h2 { text-align: start; }
+.shared-settings .setting-item > select { width: 100%; min-height: 44px; margin: 0 0 12px; }
+.shared-settings .setting-item { min-width: 0; }
+.shared-settings .setting-caption { overflow-wrap: anywhere; }
+.shared-settings .setting-description ul { padding-inline-start: 1.3em; }
+
+#backup-confirm { width: min(36rem, calc(100% - 24px)); overflow: auto; }
+#backup-confirm .dialog-heading { align-items: start; direction: ltr; }
+#backup-confirm h2 { margin: 0; overflow-wrap: anywhere; }
+#backup-dismiss { min-width: 44px; min-height: 44px; flex: none; }
+#backup-confirm .settings-backup-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+#backup-error { padding: 10px; background: var(--wash); border-inline-start: 4px solid var(--ink); }
+#backup-summary, #backup-config { overflow-wrap: anywhere; }
