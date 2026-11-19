@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Pięć w rzędzie</title>
+<title>Gomoku — Pięć w rzędzie</title>
 <meta name="description" content="Kółko i krzyżyk do pięciu. Zagraj z komputerem na planszy 15×15 lub 13×13.">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="shared-palettes.css" id="theme-palettes">
@@ -30,12 +30,12 @@
 <script defer src="profile-storage.js?v=0.9.0"></script>
 <script defer src="preferences-strings.js?v=0.9.0"></script>
 <script defer src="backup-strings.js?v=0.9.0"></script>
-<script defer src="app.js?v=0.9.0"></script>
+<script defer src="app.js?v=1.0.2"></script>
 <script defer src="https://cloud.umami.is/script.js" data-website-id="a4d24ffd-fa55-44e7-8c3b-dc5a5e42a2f2" data-domains="gomoku.walczynskir.chatgpt.site,gomoku.games-chest.com" data-tag="piec-w-rzedzie"></script>
 </head>
 <body>
 <header>
-  <a class="brand" href="./"><img src="logo.svg" alt="" width="30" height="30"><span data-t="title">Pięć w rzędzie</span></a>
+  <a class="brand" href="./"><img src="logo.svg" alt="" width="30" height="30"><span translate="no">Gomoku</span></a>
   <div class="header-controls">
     <div class="accessibility-controls">
       <button id="contrast" aria-pressed="false" data-label="High contrast"><span aria-hidden="true">◐</span> <span data-t="contrast">Kontrast</span></button>
@@ -80,7 +80,7 @@
   </section>
   <nav class="games-chest-menu" translate="no"><div class="recent-games" hidden><span></span><div class="recent-games-icons"></div></div><a class="all-games" href="https://games-chest.com/">Wszystkie gry</a></nav>
   <a id="credits-link" href="credits.html" data-t="credits">Autorzy i licencje</a>
-  <span id="footer-version" translate="no">v1.0.1</span>
+  <span id="footer-version" translate="no">v1.0.2</span>
 </footer>
 <dialog id="settings" class="shared-settings" aria-labelledby="settings-title" aria-describedby="settings-summary">
   <form method="dialog" class="settings-shell">
@@ -120,6 +120,7 @@
 </dialog>
 <dialog id="help" aria-labelledby="help-title">
   <form method="dialog" class="dialog-heading"><h2 id="help-title" data-t="How to play"></h2><button data-label="Close">×</button></form>
+  <p id="game-name">Gomoku — Pięć w rzędzie</p>
   <p data-t="computerRules"></p>
   <p data-t="rules"></p>
   <p data-t="controls"></p>

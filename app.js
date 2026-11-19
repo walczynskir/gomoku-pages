@@ -271,7 +271,8 @@
     root.toggleAttribute('data-high-contrast', prefs.contrast);
     root.toggleAttribute('data-mark-colors', prefs.markColors);
     root.dataset.textSize = prefs.large ? 'large' : 'normal';
-    document.title = t('title');
+    document.title = 'Gomoku — ' + t('title');
+    $('game-name').textContent = document.title;
     $('contrast').setAttribute('aria-pressed', prefs.contrast);
     $('large').checked = prefs.large;
     $('language').value = prefs.language;
