@@ -153,8 +153,15 @@ body:has(#gallery[open]) { overflow: hidden }
   }
   .theme-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px }
 }
-#game-area:fullscreen { max-width: none; overflow: auto; padding: max(8px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right)) max(8px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left)); --board-limit: min(35rem, 100%, max(13rem, calc(100dvh - 8.5rem))) }
-#game-area:fullscreen .game-toolbar { justify-content: center }
+#game-area.game-fullscreen { max-width: none; overflow: auto; padding: max(8px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right)) max(8px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left)); --board-limit: min(35rem, 100%, max(13rem, calc(100dvh - 8.5rem))) }
+body.game-expanded { overflow: hidden }
+#game-area.game-fullscreen {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 8;
+}
 @media (not (any-pointer:coarse)) { .board-actions { display: none } }
 @media (max-width: 720px) {
   header { flex-wrap: wrap }
@@ -168,29 +175,32 @@ body:has(#gallery[open]) { overflow: hidden }
   #contrast { font-size: .78rem }
 }
 @media (pointer:coarse) and (orientation:landscape) and (max-height:520px) {
-  .game, #game-area:fullscreen .game {
-    max-width: 100%; display: grid; grid-template-columns: minmax(0, min(52%, max(12.5rem, calc(100dvh - 5.2rem)))) minmax(0, 1fr);
+  .game, #game-area.game-fullscreen .game {
+    max-width: var(--board-limit); display: grid; grid-template-columns: minmax(0, min(52%, max(12.5rem, calc(100dvh - 5.2rem)))) minmax(0, 1fr);
     grid-template-rows: auto auto auto auto auto 1fr; align-items: start; gap: 5px 12px;
   }
   #board { grid-area: 1 / 1 / span 6; align-self: start }
   #status, .board-actions, .history-controls, #selection, #loupe { grid-column: 2; margin: 0 }
-  #game-area:fullscreen { --board-limit: 100% }
+  #game-area { --board-limit: min(48rem, 100%) }
 }
 @media (pointer:coarse) and (orientation:landscape) and (max-height:520px) and (min-width:570px) {
   header { flex-wrap: nowrap }
   .header-controls { display: flex }
   .preferences { width: auto }
   .preferences select { width: auto; max-width: 10rem }
-  main:not(:fullscreen) .game {
+  main:not(.game-fullscreen) .game {
     grid-template-columns: minmax(0, min(52%, max(12rem, calc(100dvh - 8.75rem)))) minmax(0, 1fr);
   }
 }
 @media (pointer:coarse) and (orientation:landscape) and (max-height:520px) {
-  #game-area:fullscreen { --table-width: min(52%, max(12.5rem, calc(100dvh - 5.2rem))) }
-  #game-area:fullscreen .game { grid-template-columns: minmax(0, var(--table-width)) minmax(0, 1fr) }
-  #game-area:fullscreen .game-toolbar { width: var(--table-width); margin-inline-start: 0 }
-  #game-area:fullscreen .fullscreen-icon { display: inline }
-  #game-area:fullscreen .fullscreen-label { display: none }
+  #game-area.game-fullscreen {
+    --board-limit: min(48rem, 100%);
+    --table-width: min(54%, max(0px, calc(100dvh - max(8px, env(safe-area-inset-top)) - max(8px, env(safe-area-inset-bottom)) - 50px)));
+  }
+  #game-area.game-fullscreen .game {
+    max-width: var(--board-limit);
+    grid-template-columns: minmax(0, var(--table-width)) minmax(0, 1fr);
+  }
 }
 
 /* Keep the illustration outside the opaque playing surface. */

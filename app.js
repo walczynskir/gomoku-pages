@@ -686,9 +686,10 @@
   }
 
   // Adapted from Garibaldka's accepted Games Chest toolbar.
+  document.querySelector('#game-picker-button').addEventListener('game-picker-label-change', fitToolbar);
   function fitToolbar() {
     const toolbar = document.querySelector('.game-toolbar');
-    toolbar.classList.remove('toolbar-compact', 'toolbar-icons', 'toolbar-new-icon', 'toolbar-overflow');
+    toolbar.classList.remove('toolbar-compact', 'toolbar-icons', 'toolbar-new-icon', 'toolbar-picker-icon', 'toolbar-overflow');
     const style = getComputedStyle(toolbar);
     const available = toolbar.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight);
     const required = () => Math.ceil($('new-game').getBoundingClientRect().width +
@@ -696,18 +697,18 @@
     if (required() > available) toolbar.classList.add('toolbar-compact');
     if (required() > available) toolbar.classList.add('toolbar-icons');
     if (required() > available) toolbar.classList.add('toolbar-new-icon');
+    if (required() > available) toolbar.classList.add('toolbar-picker-icon');
     if (required() > available) toolbar.classList.add('toolbar-overflow');
   }
 
   function renderFullscreen() {
-    const active = document.fullscreenElement === $('game-area');
+    const active = $('game-area').classList.contains('game-fullscreen');
     const label = t(active ? 'Exit full screen' : 'Full screen');
     const button = $('fullscreen');
     button.setAttribute('aria-pressed', active);
     button.setAttribute('aria-label', label);
     button.title = label;
     button.querySelector('.fullscreen-label').textContent = label;
-    button.hidden = !document.fullscreenEnabled;
     fitToolbar();
   }
 
@@ -809,15 +810,35 @@
     else scheduleComputer();
   };
   confirmMove.onclick = () => place(selected);
+  const gameArea = $('game-area');
+  const outsideGame = document.querySelectorAll('body > header, body > footer');
+  function setFullscreen(active) {
+    gameArea.classList.toggle('game-fullscreen', active);
+    document.body.classList.toggle('game-expanded', active);
+    for (const element of outsideGame) element.inert = active;
+    renderFullscreen();
+  }
   $('fullscreen').onclick = async () => {
-    try {
-      if (document.fullscreenElement) await document.exitFullscreen();
-      else await $('game-area').requestFullscreen();
-    } catch {
-      renderFullscreen();
+    if (gameArea.classList.contains('game-fullscreen')) {
+      if (document.fullscreenElement === gameArea) await document.exitFullscreen();
+      setFullscreen(false);
+      return;
+    }
+    setFullscreen(true);
+    if (document.fullscreenEnabled && gameArea.requestFullscreen) {
+      try { await gameArea.requestFullscreen(); } catch { /* Keep the expanded in-page layout. */ }
     }
   };
-  document.addEventListener('fullscreenchange', renderFullscreen);
+  document.addEventListener('fullscreenchange', () => {
+    setFullscreen(document.fullscreenElement === gameArea);
+  });
+  window.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && !event.defaultPrevented && !document.fullscreenElement &&
+        gameArea.classList.contains('game-fullscreen') && !document.querySelector('dialog[open]')) {
+      setFullscreen(false);
+      $('fullscreen').focus();
+    }
+  });
   document.querySelectorAll('main ~ dialog').forEach(dialog => $('game-area').append(dialog));
   new ResizeObserver(fitToolbar).observe(document.querySelector('.game-toolbar'));
   document.fonts.ready.then(fitToolbar);

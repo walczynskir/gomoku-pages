@@ -38,14 +38,14 @@
 
 #game-area .game-toolbar.toolbar-compact #fullscreen,
 #game-area .game-toolbar.toolbar-compact #help-button,
-#game-area .game-toolbar.toolbar-icons .game-tools button {
+#game-area .game-toolbar.toolbar-icons .game-tools button:not(#game-picker-button) {
   width: 44px;
   height: 44px;
   padding: 0;
 }
 .game-toolbar.toolbar-compact #fullscreen .fullscreen-label,
 .game-toolbar.toolbar-compact #help-button .toolbar-label,
-.game-toolbar.toolbar-icons .game-tools .toolbar-label { display: none; }
+.game-toolbar.toolbar-icons .game-tools :not(#game-picker-button) > .toolbar-label { display: none; }
 .game-toolbar.toolbar-compact #fullscreen .fullscreen-icon,
 .game-toolbar.toolbar-compact #help-button .toolbar-icon,
 .game-toolbar.toolbar-icons .game-tools .toolbar-icon { display: inline; font-size: 24px; line-height: 1; }
@@ -54,7 +54,7 @@
 #game-area .game-toolbar #new-game .toolbar-label { display: inline; }
 #game-area .game-toolbar #new-game .toolbar-icon { display: none; }
 #game-area .game-toolbar.toolbar-overflow { overflow-x: auto; }
-#game-area:fullscreen .game-toolbar {
+#game-area.game-fullscreen .game-toolbar {
   position: sticky;
   top: 0;
   z-index: 8;
@@ -73,14 +73,17 @@
 #game-area .game-toolbar.toolbar-new-icon #new-game .toolbar-icon { display: inline; }
 
 @media (max-width: 360px) {
-  #game-area:fullscreen .game-toolbar { padding-inline: 8px; }
+  #game-area.game-fullscreen .game-toolbar { padding-inline: 8px; }
 }
 
 /* The optional history group stays within the right-hand toolbar group. */
 #game-area .game-toolbar .history-controls { display: contents; }
-#game-area:fullscreen .game-toolbar { max-width: var(--board-limit); justify-content: space-between; }
+#game-area.game-fullscreen .game-toolbar { max-width: var(--board-limit); justify-content: space-between; }
 @media (pointer: coarse) and (orientation: landscape) and (max-height: 520px) {
-  #game-area:fullscreen .game-toolbar { width: 100%; margin-inline: auto; }
+  #game-area.game-fullscreen .game-toolbar {
+    padding: 0;
+    margin: 0 auto 6px;
+  }
 }
 header .brand { min-width: 0; overflow-wrap: anywhere; }
 header .brand span { min-width: 0; }
@@ -91,4 +94,4 @@ header .accessibility-controls { flex: none; }
   header #contrast { padding-inline: 6px; }
 }
 
-#game-area:fullscreen { padding-inline: max(8px, env(safe-area-inset-left)) max(8px, env(safe-area-inset-right)); }
+#game-area.game-fullscreen { padding-inline: max(8px, env(safe-area-inset-left)) max(8px, env(safe-area-inset-right)); }
