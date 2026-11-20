@@ -485,6 +485,17 @@
     return t(computerTurn() ? 'thinking' : 'playerTurn', { mark: playerMark });
   }
 
+  function renderProgress() {
+    const next = rewards.find(entry => !available(entry));
+    const reward = next && { name: t(next[1]), count: rewardProgress(achievements, next[2]).count,
+      goal: next[2].goal, wins: next[2].metric === 'wins' };
+    GamesChestProgressBar(prefs.language, achievements.wins.size, reward, () => {
+      const totals = FiveProgressBackup.summary(currentProgress());
+      const copy = backupCopy();
+      return [[null, totals.finished], [copy[9], totals.wins], [copy[10], totals.losses], [backupExtra()[1], totals.draws]];
+    });
+  }
+
   function renderBoard() {
     board.setAttribute('aria-label', t('board', { size: game.size }));
     cells.forEach(({ button, square }, index) => {
@@ -496,6 +507,7 @@
     undoButton.disabled = undoFrom() < 0;
     redoButton.disabled = !future.length;
     fitToolbar();
+    renderProgress();
     confirmMove.textContent = t('place', { mark: level ? playerMark : game.turn });
     confirmMove.disabled = selected === null || Boolean(game.result) || computerTurn();
     $('selection').hidden = selected === null;
