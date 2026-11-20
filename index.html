@@ -42,7 +42,8 @@
 <script defer src="progress-bar.js?v=1.3.0"></script>
 <script defer src="app.js?v=1.3.0"></script>
 <script defer src="https://cloud.umami.is/script.js" data-website-id="a4d24ffd-fa55-44e7-8c3b-dc5a5e42a2f2" data-domains="gomoku.walczynskir.chatgpt.site,gomoku.games-chest.com" data-tag="piec-w-rzedzie"></script>
-<link rel="stylesheet" href="progress-bar.css?v=1.3.0">
+<link rel="stylesheet" href="progress-bar.css?v=1.3.1">
+<link rel="stylesheet" href="progress-summary.css?v=1.3.1">
 </head>
 <body>
 <header>
@@ -98,16 +99,15 @@
   </section>
   <nav class="games-chest-menu" translate="no"><div class="recent-games" hidden><span></span><div class="recent-games-icons"></div></div><a class="all-games" href="https://games-chest.com/">Wszystkie gry</a></nav>
   <a id="credits-link" href="credits.html" data-t="credits">Autorzy i licencje</a>
-  <span id="footer-version" translate="no">v1.3.0</span>
+  <span id="footer-version" translate="no">v1.3.1</span>
 </footer>
-<dialog id="progress-dialog" aria-labelledby="progress-title" translate="no">
+<dialog id="progress-dialog" class="progress-summary" aria-labelledby="progress-title" translate="no">
   <div class="progress-heading">
     <h2 id="progress-title">My progress</h2>
-    <form method="dialog"><button id="progress-close" aria-label="Close" autofocus>×</button></form>
+    <form method="dialog"><button id="progress-close" class="progress-summary-close" aria-label="Close" autofocus>×</button></form>
   </div>
   <dl id="progress-metrics"></dl>
   <p id="progress-reward-detail" hidden translate="no"></p>
-  <p class="muted small" id="local-note" hidden></p>
 </dialog>
 <dialog id="game-picker" aria-labelledby="game-picker-title" translate="no">
   <div class="game-picker-header">
