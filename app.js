@@ -485,14 +485,18 @@
     return t(computerTurn() ? 'thinking' : 'playerTurn', { mark: playerMark });
   }
 
+  const currentStatistics = () => FiveProgressBackup.summary(currentProgress());
+  const statisticsReset = createStatisticsReset('gomoku-statistics-baseline-v1', '#progress-dialog',
+    currentStatistics, renderProgress);
+
   function renderProgress() {
     const next = rewards.find(entry => !available(entry));
     const reward = next && { name: t(next[1]), count: rewardProgress(achievements, next[2]).count,
       goal: next[2].goal, wins: next[2].metric === 'wins' };
-    GamesChestProgressBar(prefs.language, achievements.wins.size, reward, () => {
-      const totals = FiveProgressBackup.summary(currentProgress());
+    GamesChestProgressBar(prefs.language, statisticsReset.count('wins', achievements.wins.size), reward, () => {
+      const totals = currentStatistics();
       const copy = backupCopy();
-      return [[null, totals.finished], [copy[9], totals.wins], [copy[10], totals.losses], [backupExtra()[1], totals.draws]];
+      return [[null, statisticsReset.count('finished', totals.finished)], [copy[9], statisticsReset.count('wins', totals.wins)], [copy[10], statisticsReset.count('losses', totals.losses)], [backupExtra()[1], statisticsReset.count('draws', totals.draws)]];
     });
   }
 
