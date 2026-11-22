@@ -61,6 +61,10 @@ main { max-width: 62rem; padding: 12px; margin: auto; background: var(--bg) }
 .game-tools { justify-content: flex-end }
 #new-game { flex-shrink: 0 }
 #status { font-weight: 700; margin: 0 0 6px }
+#touch-move-hint { display: none; font-size: .875em; font-weight: 400 }
+@media (any-pointer: coarse) {
+  #touch-move-hint:not([hidden]) { display: inline; margin-inline-start: .55em }
+}
 .board-grid { display: grid; width: 100%; grid-template-columns: repeat(var(--size), minmax(0, 1fr)); border-block-start: 1px solid var(--grid-line); border-inline-start: 1px solid var(--grid-line); direction: ltr; container-type: inline-size }
 .board-row, .square { display: contents }
 .cell {

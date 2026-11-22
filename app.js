@@ -506,7 +506,10 @@
       paintCell(button, index);
       square.setAttribute('aria-selected', selected === index);
     });
-    $('status').textContent = resultLabel();
+    $('turn-status').textContent = resultLabel();
+    const touchHint = $('touch-move-hint');
+    touchHint.hidden = selected !== null || Boolean(game.result) || computerTurn();
+    touchHint.textContent = touchHint.hidden ? '' : t('touchSelectSquare');
     historyControls.hidden = !prefs.history;
     undoButton.disabled = undoFrom() < 0;
     redoButton.disabled = !future.length;
