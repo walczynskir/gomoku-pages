@@ -98,7 +98,7 @@
     sliding: savedPrefs?.sliding === true
   };
   const savedGame = read('game');
-  const restored = restore(savedGame?.size, savedGame?.moves, savedGame?.starter, savedGame?.sliding);
+  const restored = restore(savedGame?.size, savedGame?.moves, savedGame?.starter, savedGame?.sliding, savedGame?.slidingMoves);
   const newId = () => globalThis.crypto.randomUUID?.() ??
     Array.from(globalThis.crypto.getRandomValues(new Uint32Array(4)), value => value.toString(16)).join('-');
   let playerMark = restored ? (savedGame.playerMark === 'O' ? 'O' : 'X') : prefs.playerMark;
@@ -121,10 +121,15 @@
     ? (['player', 'computer'].includes(savedGame.previousLoserSide) ? savedGame.previousLoserSide : null)
     : (game.line.length ? null : lastLoserSide);
   let future = [];
-  if (restored && Array.isArray(savedGame.future) &&
-      savedGame.future.length <= game.cells.length - game.moves.length &&
-      restore(game.size, [...game.moves, ...savedGame.future], game.starter, game.sliding)) {
-    future = savedGame.future;
+  let futureSliding = [];
+  if (restored && Array.isArray(savedGame.future) && savedGame.future.length <= game.cells.length - game.moves.length) {
+    const replayOptions = Array.isArray(savedGame.futureSliding) ? savedGame.futureSliding
+      : savedGame.future.map(() => game.sliding);
+    if (restore(game.size, [...game.moves, ...savedGame.future], game.starter, game.sliding,
+      [...game.slidingMoves, ...replayOptions])) {
+      future = savedGame.future;
+      futureSliding = replayOptions;
+    }
   }
   rememberLoser();
   let computerTimer = null;
@@ -569,13 +574,16 @@
     if (undo) {
       const cut = undoFrom();
       if (cut < 0) return;
-      next = restore(game.size, game.moves.slice(0, cut), game.starter, game.sliding);
+      next = restore(game.size, game.moves.slice(0, cut), game.starter, game.sliding, game.slidingMoves.slice(0, cut));
       future = [...game.moves.slice(cut), ...future];
+      futureSliding = [...game.slidingMoves.slice(cut), ...futureSliding];
     } else {
       if (!future.length) return;
       const count = Math.min(future.length, level ? 2 : 1);
-      next = restore(game.size, [...game.moves, ...future.slice(0, count)], game.starter, game.sliding);
+      next = restore(game.size, [...game.moves, ...future.slice(0, count)], game.starter, game.sliding,
+        [...game.slidingMoves, ...futureSliding.slice(0, count)]);
       future = future.slice(count);
+      futureSliding = futureSliding.slice(count);
     }
     stopComputer();
     updatePosition(next);
@@ -584,7 +592,7 @@
   function gameSnapshot() {
     return {
       id: gameId, size: game.size, sliding: game.sliding, starter: game.starter, moves: game.moves,
-      future, playerMark, lastLoserSide, previousLoserSide, difficulty: level,
+      slidingMoves: game.slidingMoves, future, futureSliding, playerMark, lastLoserSide, previousLoserSide, difficulty: level,
       started: session.started, outcome: session.outcome
     };
   }
@@ -605,36 +613,40 @@
     computerTimer = setTimeout(() => {
       computerTimer = null;
       const position = game;
+      const searchPosition = { ...position, sliding: prefs.sliding };
       const finish = move => {
         stopComputer();
         if (position !== game || !computerTurn()) return;
         const legal = Number.isInteger(move) && move >= 0 && move < game.cells.length && !game.cells[move];
-        place(legal ? move : chooseMove(game, 'easy'), true);
+        place(legal ? move : chooseMove(searchPosition, 'easy'), true);
       };
       try {
-        const worker = new Worker('computer-worker.js?v=0.7.0');
+        const worker = new Worker('computer-worker.js?v=sliding-now-1');
         computerWorker = worker;
         worker.onmessage = event => { if (computerWorker === worker) finish(event.data); };
         const fallback = () => {
-          if (computerWorker === worker) finish(chooseMove(position, level));
+          if (computerWorker === worker) finish(chooseMove(searchPosition, level));
         };
         worker.onerror = event => {
           event.preventDefault();
           fallback();
         };
-        worker.postMessage({ game, level });
+        worker.postMessage({ game: searchPosition, level });
         computerTimer = setTimeout(fallback, 5000);
       } catch {
-        finish(chooseMove(game, level));
+        finish(chooseMove(searchPosition, level));
       }
     }, 180);
   }
 
   function place(index, byComputer = false) {
     if (computerTurn() !== byComputer) return;
-    const next = play(game, index);
+    const next = play(game, index, prefs.sliding);
     if (!next) return;
-    if (!byComputer) future = [];
+    if (!byComputer) {
+      future = [];
+      futureSliding = [];
+    }
     session.started = true;
     updatePosition(next);
   }
@@ -682,7 +694,7 @@
     const nextId = newId();
     const snapshot = {
       id: nextId, size: next.size, sliding: next.sliding, starter: next.starter, moves: [],
-      future: [], playerMark: prefs.playerMark, lastLoserSide, previousLoserSide: lastLoserSide,
+      slidingMoves: [], future: [], futureSliding: [], playerMark: prefs.playerMark, lastLoserSide, previousLoserSide: lastLoserSide,
       difficulty: prefs.difficulty, started: false, outcome: null
     };
     if (!save('game', snapshot)) {
@@ -693,6 +705,7 @@
     level = prefs.difficulty;
     previousLoserSide = lastLoserSide;
     future = [];
+    futureSliding = [];
     playerMark = prefs.playerMark;
     game = next;
     gameId = nextId;
@@ -779,6 +792,8 @@
   $('sliding').onchange = event => {
     prefs.sliding = event.target.checked;
     save('prefs', prefs);
+    stopComputer();
+    scheduleComputer();
   };
   $('show-history').onchange = event => {
     prefs.history = event.target.checked;

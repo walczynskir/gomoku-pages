@@ -6,7 +6,7 @@
   function create(size = sizes[0], starter = 'X', sliding = false) {
     if (!sizes.includes(size)) throw new RangeError('Unsupported board size');
     if (starter !== 'X' && starter !== 'O') throw new RangeError('Unsupported starter');
-    return { size, starter, sliding: sliding === true, last: null, shift: [0, 0], cells: Array(size * size).fill(''), moves: [], turn: starter, line: [], result: null };
+    return { size, starter, sliding: sliding === true, last: null, shift: [0, 0], cells: Array(size * size).fill(''), moves: [], slidingMoves: [], turn: starter, line: [], result: null };
   }
 
   function winningLine(cells, size, index, mark) {
@@ -29,13 +29,14 @@
     return [];
   }
 
-  function play(game, index) {
+  function play(game, index, sliding = game.sliding) {
     if (game.result || !Number.isInteger(index) || index < 0 || index >= game.cells.length || game.cells[index]) return null;
-    const position = advance(game.cells, game.size, index, game.turn, game.sliding);
+    const position = advance(game.cells, game.size, index, game.turn, sliding);
     const moves = [...game.moves, index];
     const line = winningLine(position.cells, game.size, position.last, game.turn);
     const result = line.length ? game.turn : moves.length === position.cells.length ? 'draw' : null;
-    return { ...game, ...position, moves, line, result, turn: game.turn === 'X' ? 'O' : 'X' };
+    const slidingMoves = [...game.slidingMoves, sliding === true];
+    return { ...game, ...position, moves, slidingMoves, line, result, turn: game.turn === 'X' ? 'O' : 'X' };
   }
 
   function advance(source, size, index, mark, sliding) {
@@ -57,12 +58,14 @@
     return { cells, last: index + dr * size + dc, shift: [dr, dc] };
   }
 
-  function restore(size, moves, starter = 'X', sliding = false) {
+  function restore(size, moves, starter = 'X', sliding = false, slidingMoves) {
     if (!sizes.includes(size) || !Array.isArray(moves) || moves.length > size * size) return null;
     if (starter !== 'X' && starter !== 'O') return null;
+    if (slidingMoves !== undefined && (!Array.isArray(slidingMoves) || slidingMoves.length !== moves.length
+        || !slidingMoves.every(value => typeof value === 'boolean'))) return null;
     let game = create(size, starter, sliding);
-    for (const index of moves) {
-      game = play(game, index);
+    for (const [move, index] of moves.entries()) {
+      game = play(game, index, slidingMoves?.[move]);
       if (!game) return null;
     }
     return game;
