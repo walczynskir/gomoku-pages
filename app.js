@@ -859,6 +859,7 @@
       return;
     }
     setFullscreen(true);
+    if (matchMedia('(display-mode: standalone)').matches || navigator.standalone === true) return;
     if (document.fullscreenEnabled && gameArea.requestFullscreen) {
       try { await gameArea.requestFullscreen(); } catch { /* Keep the expanded in-page layout. */ }
     }
