@@ -60,7 +60,7 @@ main { max-width: 62rem; padding: 12px; margin: auto; background: var(--bg) }
 .game-toolbar { justify-content: space-between; margin-block-end: 10px }
 .game-tools { justify-content: flex-end }
 #new-game { flex-shrink: 0 }
-#status { font-weight: 700; margin: 0 0 6px }
+#status { font-weight: 700; margin: 8px 0 0 }
 #touch-move-hint { display: none; font-size: .875em; font-weight: 400 }
 @media (any-pointer: coarse) {
   #touch-move-hint:not([hidden]) { display: inline; margin-inline-start: .55em }
