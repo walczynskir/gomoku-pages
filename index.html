@@ -48,16 +48,17 @@
 <script defer src="shared-footer.js?v=resume-game-1"></script>
 <script defer src="./game-update.js?v=2"></script>
 <script defer src="./game-install.js?v=safari-install-guide-1"></script>
+<link rel="stylesheet" href="shared-theme-components.css?v=1.3.22">
 </head>
 <body>
-<header>
+<header class="gc-theme-header">
   <a class="brand" href="./"><img src="logo.png?v=1.0.3" alt="" width="30" height="30"><span translate="no">Gomoku</span></a>
   <div class="header-controls">
     <div class="accessibility-controls">
       <button id="contrast" aria-pressed="false" data-label="High contrast"><span aria-hidden="true">◐</span> <span data-t="contrast">Kontrast</span></button>
       <label class="text-size-control"><input type="checkbox" id="large" data-label="Larger text"><span aria-hidden="true">A+</span></label>
     </div>
-    <div class="preferences">
+    <div class="preferences gc-theme-preferences">
       <select id="language" data-label="Language"></select>
       <select id="theme" data-label="Appearance"></select>
     </div>
@@ -71,7 +72,7 @@
   <span class="progress-chevron" aria-hidden="true">›</span>
 </button>
   <div class="game-toolbar">
-    <button id="new-game" dir="auto" class="primary" data-label="New game"><span class="toolbar-icon" aria-hidden="true">+</span><span class="toolbar-label" data-t="New game">Nowa gra</span></button>
+    <button id="new-game" dir="auto" class="primary gc-theme-action" data-label="New game"><span class="toolbar-icon" aria-hidden="true">+</span><span class="toolbar-label" data-t="New game">Nowa gra</span></button>
     <div class="game-tools"><button id="game-picker-button" type="button" aria-haspopup="dialog" aria-controls="game-picker" aria-label="Inne gry" translate="no">
 <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true" focusable="false"><rect x="2" y="2" width="6" height="6" rx="1"/><rect x="12" y="2" width="6" height="6" rx="1"/><rect x="2" y="12" width="6" height="6" rx="1"/><rect x="12" y="12" width="6" height="6" rx="1"/></svg><span class="toolbar-label">Inne gry</span></button>
       <div id="history-controls" class="history-controls" role="group" data-label="historyOption" hidden>
@@ -83,7 +84,7 @@
       <button id="settings-button" dir="auto" class="shared-settings-button" data-label="Settings" aria-haspopup="dialog"></button>
     </div>
   </div>
-  <section class="game">
+  <section class="game gc-theme-table gc-theme-scene-table">
     <div id="board" class="board-grid" role="grid"></div>
     <p id="status" role="status"><span id="turn-status"></span><span id="touch-move-hint" hidden></span></p>
     <div class="board-actions">
@@ -105,7 +106,7 @@
   </section>
   <div class="footer-details">
     <a id="credits-link" href="credits.html" data-footer-copy="credits" translate="no">Autorzy i licencje</a>
-    <span id="footer-version" translate="no">v1.3.21</span>
+    <span id="footer-version" translate="no">v1.3.22</span>
   </div>
 </footer>
 <dialog id="progress-dialog" class="progress-summary" aria-labelledby="progress-title" translate="no">
