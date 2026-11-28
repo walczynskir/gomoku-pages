@@ -166,7 +166,7 @@ body.game-expanded { overflow: hidden }
   height: 100%;
   z-index: 8;
 }
-@media (not (any-pointer:coarse)) { .board-actions { display: none } }
+@media (not (any-pointer:coarse)) { .board-actions:not(.game-ended) { display: none } }
 @media (max-width: 720px) {
   header { flex-wrap: wrap }
   .header-controls { display: contents }

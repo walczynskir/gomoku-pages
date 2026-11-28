@@ -520,8 +520,11 @@
     redoButton.disabled = !future.length;
     fitToolbar();
     renderProgress();
-    confirmMove.textContent = t('place', { mark: level ? playerMark : game.turn });
-    confirmMove.disabled = selected === null || Boolean(game.result) || computerTurn();
+    confirmMove.parentElement.classList.toggle('game-ended', Boolean(game.result));
+    confirmMove.textContent = game.result
+      ? $('new-game').getAttribute('aria-label')
+      : t('place', { mark: level ? playerMark : game.turn });
+    confirmMove.disabled = !game.result && (selected === null || computerTurn());
     $('selection').hidden = selected === null;
     $('selection').textContent = selected === null ? '' : squareLabel(selected);
   }
@@ -823,7 +826,7 @@
     }
   };
   $('help-button').onclick = () => $('help').showModal();
-  $('new-game').onclick = () => {
+  function requestNewGame() {
     if (session.started && !game.result) {
       if ($('restart').open) return;
       restartGameId = gameId;
@@ -834,7 +837,8 @@
     } else {
       start();
     }
-  };
+  }
+  $('new-game').onclick = requestNewGame;
   $('restart').onclose = () => {
     const confirmed = $('restart').returnValue === 'start';
     const expectedId = restartGameId;
@@ -843,7 +847,10 @@
     if (confirmed && expectedId === gameId) start();
     else scheduleComputer();
   };
-  confirmMove.onclick = () => place(selected);
+  confirmMove.onclick = () => {
+    if (game.result) requestNewGame();
+    else place(selected);
+  };
   const gameArea = $('game-area');
   const outsideGame = document.querySelectorAll('body > header, body > footer');
   function setFullscreen(active) {
